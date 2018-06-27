@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,user-scalable=no" /> 
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telphone=no, email=no"/>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>移动弹出框组件</title>
+    <link rel="stylesheet" href="dialog.css">
+    <style>
+        * {margin: 0;padding: 0;}
+        body {font-size: 12px; padding: 20px;}
+        button {
+            display: block;
+            padding: 10px;
+            margin: 20px 0;
+            border-radius: 10px;
+            background-color: green;
+            color: white;
+            border: 1px solid #eee;
+        }
+
+        a {
+            display: block;
+            min-width: 200px;
+            height: 200px;
+            text-decoration: none;
+            background-color: #999;
+            border-radius: 5px;
+            color: black;
+            padding: 10px;
+        }
+    </style>
+</head>
+<body>
+    <!-- <div class="g-dialog-container">
+        <div class="dialog-window">
+            <div class="dialog-header warning"></div>
+            <div class="dialog-content">你是否要清除购物车</div>
+            <div class="dialog-footer">
+                <button class="green">按钮1</button>
+                <button>按钮2</button>
+                <button class="red">按钮3</button>
+            </div>
+        </div>
+    </div> -->
+    <button id="btn8" style="background-color: red;">延时关闭加回调</button>
+    <button id="btn9" style="background-color: red;">遮罩层点击是否可以关闭</button>
+
+    <a href="http://www.baidu.com" id="link">我是一个链接，点击我会跳转至其他页面</a>
+
+    <button id="btn1">没有传递任何参数</button>
+    <button id="btn2">弹出一个不带任何按钮且是警告的框，2秒后自动关闭</button>
+    <button id="btn3">弹出一个有确认和取消按钮的成功框，点击按钮直接关闭</button>
+    <button id="btn4">弹出一个有确认按钮的警告框，点击按钮不关闭（需手动关闭）</button>
+    <button id="btn5">弹出一个多组合的按钮框，且按钮样式可定制</button>
+    <button id="btn6">弹出一个有确认和删除的框，点击确认弹出加载框2秒自动关闭，点击删除按钮把上一次框关闭</button>
+</body>
+<script src="zepto.js"></script>
+<script src="dialog.js"></script>
+<script>
+    $("#btn8").tap(function() {
+        var d = $.dialog({
+            type: 'warning',
+            text: '延时关闭加回调',
+            delay: 2000,
+            delayCallback: function() {
+                alert('11111111');
+            }
+        });
+    });
+
+    $("#btn9").tap(function() {
+        var d = $.dialog({
+            type: 'warning',
+            text: '遮罩层点击是否可以关闭',
+            buttons: [
+                {
+                    text: '按钮A',
+                    type: 'green'
+                },
+                {
+                    text: '按钮B',
+                    callback: function() {
+                        return false;
+                    }
+                }
+            ],
+            maskOpacity: 0.4,
+            maskClose: true
+        });
+    });
+    // $.dialog({type: 'loading',message: '我叫等待对话框'})
+    $("#btn6").tap(function() {
+        var d = $.dialog({
+            buttons: [
+                {
+                    type: 'green',
+                    text: '确认',
+                    callback: function() {
+                        var dia2 = $.dialog({
+                            delay: 2000
+                        });
+                    }
+                },
+                {
+                    type: 'red',
+                    text: '删除',
+                    callback: function() {
+                        var dia2 = $.dialog({
+                            
+                            buttons: [
+                                {
+                                    text: '删除上一个框',
+                                    callback: function() {
+                                        d.close();
+                                        return false;
+                                    }
+                                }
+                            ]
+                        });
+                        return false;
+                    }
+                }
+            ]
+        });
+    });
+    $("#btn5").tap(function() {
+        var d = $.dialog({
+            type: 'loading',
+            content: '多组合按钮框',
+            buttons: [
+                {
+                    type: 'green',
+                    text: '确认',
+                    callback: function() {
+                        return false;
+                    }
+                },
+                {
+                    type: '',
+                    text: '取消',
+                    callback: function() {
+                        return false;
+                    }
+                },{
+                    type: 'red',
+                    text: '删除',
+                    callback: function() {
+                    }
+                }
+            ]
+        });
+    })
+    $("#btn4").tap(function() {
+        var d = $.dialog({
+            type: 'warning',
+            effect: true,
+            buttons: [
+                {
+                    text: '确认',
+                    callback: function() {
+                        // return false;
+                    }
+                }
+            ]
+        });
+    })
+    $("#btn3").tap(function() {
+        var d = $.dialog({
+            type: 'ok',
+            buttons: [
+                {
+                    text: '确认'
+                },
+                {
+                    text: '取消'
+                }
+            ]
+        });
+    });
+    $("#btn2").tap(function() {
+        var d = $.dialog({
+            type: 'warning',
+            delay: 2000
+        });
+    })
+    $("#btn1").tap(function() {
+        var d = $.dialog();
+    })
+    // var a = $.dialog({
+    //         width: 100,
+    //         // 对话框高度
+    //         // height: 50,
+    //         // 提示信息
+    //         message: "Are you OK?",
+    //         // 对话框类型
+    //         type: 'warning',
+    //         // 按钮配置
+    //         buttons: [
+    //             {
+    //                 type: 'red',
+    //                 text: '不好',
+    //                 callback: function() {
+    //                     alert(1);
+    //                     return false;
+    //                 }
+    //             },
+    //             {
+    //                 type: 'green',
+    //                 text: '好啊',
+    //                 callback: function() {
+    //                     alert(2);
+    //                 }
+    //             }
+    //         ],
+    //         //弹出框多久关闭
+    //         delay: null,
+    //         //对话框透明度
+    //         maskOpacity: 0.5
+    // });
+</script>
+</html>
